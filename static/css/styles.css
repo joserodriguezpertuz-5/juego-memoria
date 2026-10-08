@@ -9,7 +9,7 @@
   --bg-secondary: #1E293B;
   --bg-card: rgba(30, 41, 59, 0.7);
   --bg-card-hover: rgba(51, 65, 85, 0.8);
-  
+
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
@@ -17,7 +17,7 @@
   --accent-primary: #6366F1;
   --accent-hover: #4F46E5;
   --accent-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-  
+
   --success-color: #10B981;
   --success-glow: rgba(16, 185, 129, 0.4);
   --danger-color: #EF4444;
@@ -62,7 +62,9 @@
 }
 
 /* Base Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -107,6 +109,7 @@ body {
   letter-spacing: -0.025em;
   background: var(--accent-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 4px;
 }
@@ -218,8 +221,13 @@ body {
 }
 
 @keyframes pulse-red {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.08); }
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.08);
+  }
 }
 
 /* Main Game Board & Card Grids */
@@ -230,7 +238,8 @@ body {
   margin: 0 auto;
 }
 
-.grid-facil, .grid-medio {
+.grid-facil,
+.grid-medio {
   grid-template-columns: repeat(4, 1fr);
 }
 
@@ -245,7 +254,10 @@ body {
 }
 
 @media (max-width: 450px) {
-  .grid-facil, .grid-medio, .grid-dificil {
+
+  .grid-facil,
+  .grid-medio,
+  .grid-dificil {
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
   }
@@ -348,9 +360,19 @@ body {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0) scaleX(1); }
-  25% { transform: translateX(-4px) scaleX(1); }
-  75% { transform: translateX(4px) scaleX(1); }
+
+  0%,
+  100% {
+    transform: translateX(0) scaleX(1);
+  }
+
+  25% {
+    transform: translateX(-4px) scaleX(1);
+  }
+
+  75% {
+    transform: translateX(4px) scaleX(1);
+  }
 }
 
 /* Action Bar */
@@ -507,7 +529,10 @@ body {
 
 /* Motion reduction preference */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+
+  *,
+  ::before,
+  ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
