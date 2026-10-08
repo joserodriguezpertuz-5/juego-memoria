@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memoria de Parejas</title>
+  <meta name="description" content="Juego de memoria interactivo con múltiples temas, niveles y reglas de juego." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Flag Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="header-title">
+        <h1>🧠 Memoria de Parejas</h1>
+        <p class="subtitle">Encuentra todas las parejas en el menor tiempo e intentos posibles</p>
+      </div>
+
+      <!-- Selectores del Juego -->
+      <div class="controls-panel" role="form" aria-label="Configuración de la partida">
+        <div class="control-group">
+          <label for="select-theme">Tema</label>
+          <select id="select-theme" class="custom-select">
+            <option value="animales">🐶 Animales</option>
+            <option value="frutas">🍎 Frutas</option>
+            <option value="figuras">🎨 Figuras</option>
+            <option value="banderas">🌐 Banderas</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="select-rule">Regla</label>
+          <select id="select-rule" class="custom-select">
+            <option value="sin_limites">♾️ Sin límites</option>
+            <option value="contrarreloj">⏱️ Contrarreloj</option>
+            <option value="intentos_limitados">🎯 Intentos limitados</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="select-level">Nivel</label>
+          <select id="select-level" class="custom-select">
+            <option value="facil">🌱 Fácil (6 parejas)</option>
+            <option value="medio">⭐ Medio (8 parejas)</option>
+            <option value="dificil">🔥 Difícil (12 parejas)</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Panel de Estadísticas -->
+    <section class="stats-panel" aria-label="Estadísticas de la partida">
+      <div class="stat-card" id="stat-card-attempts">
+        <span class="stat-icon">🎯</span>
+        <div class="stat-info">
+          <span class="stat-label" id="stat-attempts-label">Intentos</span>
+          <span class="stat-value" id="stat-attempts" aria-live="polite">0</span>
+        </div>
+      </div>
+
+      <div class="stat-card" id="stat-card-timer">
+        <span class="stat-icon">⏱️</span>
+        <div class="stat-info">
+          <span class="stat-label" id="stat-timer-label">Tiempo</span>
+          <span class="stat-value" id="stat-timer" aria-live="polite">00:00</span>
+        </div>
+      </div>
+
+      <div class="stat-card" id="stat-card-score">
+        <span class="stat-icon">⭐</span>
+        <div class="stat-info">
+          <span class="stat-label">Puntaje</span>
+          <span class="stat-value" id="stat-score" aria-live="polite">0</span>
+        </div>
+      </div>
+
+      <div class="stat-card" id="stat-card-record">
+        <span class="stat-icon">🏆</span>
+        <div class="stat-info">
+          <span class="stat-label">Récord</span>
+          <span class="stat-value" id="stat-record" aria-live="polite">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tablero de Cartas -->
+    <main id="game-board" class="game-board grid-facil" role="region" aria-label="Tablero de juego">
+      <!-- Las cartas se generarán dinámicamente -->
+    </main>
+
+    <!-- Botón de Reiniciar manual -->
+    <div class="action-bar">
+      <button id="btn-restart" class="btn-primary">
+        <span class="btn-icon">🔄</span> Reiniciar Partida
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de Victoria -->
+  <dialog id="victory-dialog" class="game-dialog">
+    <div class="dialog-content">
+      <div class="dialog-icon victory-icon">🎉</div>
+      <h2>¡Victoria!</h2>
+      <p class="dialog-message">¡Has completado el tablero y encontrado todas las parejas!</p>
+
+      <div class="dialog-stats">
+        <div class="dialog-stat-row">
+          <span>Puntaje base + racha:</span>
+          <strong id="victory-base-score">0</strong>
+        </div>
+        <div class="dialog-stat-row" id="victory-bonus-row">
+          <span id="victory-bonus-label">Bonus por rendimiento:</span>
+          <strong id="victory-bonus-score">+0</strong>
+        </div>
+        <div class="dialog-stat-row total-row">
+          <span>Puntaje Total:</span>
+          <strong id="victory-total-score">0</strong>
+        </div>
+        <div class="dialog-stat-row">
+          <span>Intentos realizados:</span>
+          <strong id="victory-attempts">0</strong>
+        </div>
+        <div class="dialog-stat-row">
+          <span>Tiempo empleado:</span>
+          <strong id="victory-time">00:00</strong>
+        </div>
+      </div>
+
+      <div id="new-record-badge" class="new-record-badge hidden">
+        🏆 ¡NUEVO RÉCORD CONSEGUIDO! 🏆
+      </div>
+
+      <div class="dialog-actions">
+        <button id="btn-victory-restart" class="btn-dialog btn-success">Jugar de nuevo</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal de Derrota -->
+  <dialog id="defeat-dialog" class="game-dialog">
+    <div class="dialog-content">
+      <div class="dialog-icon defeat-icon">❌</div>
+      <h2>Perdiste</h2>
+      <p id="defeat-message" class="dialog-message">Se agotaron las condiciones de la partida.</p>
+
+      <div class="dialog-stats">
+        <div class="dialog-stat-row">
+          <span>Parejas encontradas:</span>
+          <strong id="defeat-pairs">0 / 0</strong>
+        </div>
+        <div class="dialog-stat-row">
+          <span>Puntaje obtenido:</span>
+          <strong id="defeat-score">0</strong>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button id="btn-defeat-retry" class="btn-dialog btn-danger">Reintentar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Script Modules -->
+  <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>
